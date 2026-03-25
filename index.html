@@ -1,5 +1,702 @@
 <!DOCTYPE html>
+<html lang="da"><!DOCTYPE html>
 <html lang="da">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Dagsplan for zoo-tur fra Ådalens skole — 10 skridt"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Zoo-tur 🦁"/>
+<meta name="theme-color" content="#4ECDC4"/>
+<title>Min dag i Zoo 🦁</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+<style>
+  :root {
+    --yellow:  #FFD93D;
+    --coral:   #FF6B6B;
+    --teal:    #4ECDC4;
+    --purple:  #A78BFA;
+    --orange:  #FF8C42;
+    --green:   #6BCB77;
+    --blue:    #4D96FF;
+    --bg:      #FFF9F0;
+    --text:    #1A1A2E;
+    --muted:   #5a5a7a;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 4rem;
+  }
+
+  .school-banner {
+    background: var(--blue);
+    color: white;
+    text-align: center;
+    padding: .7rem 1rem;
+    font-size: .95rem;
+    font-weight: 900;
+    letter-spacing: .03em;
+  }
+
+  .header {
+    background: var(--teal);
+    padding: 2rem 1.5rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content:'';
+    position:absolute; top:-40px; right:-40px;
+    width:140px; height:140px;
+    background:var(--yellow);
+    border-radius:50%; opacity:.4;
+  }
+  .header::after {
+    content:'';
+    position:absolute; bottom:-1px; left:0; right:0;
+    height:44px;
+    background:var(--bg);
+    clip-path:ellipse(55% 100% at 50% 100%);
+  }
+  .header-emoji {
+    font-size:4rem; display:block; margin-bottom:.5rem;
+    animation:bounce 2.2s ease-in-out infinite; position:relative;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  .header h1 {
+    font-size:clamp(2.2rem,8vw,3.4rem); font-weight:900;
+    color:#fff; text-shadow:0 3px 0 rgba(0,0,0,.15);
+    line-height:1.1; position:relative; margin-top:.5rem;
+  }
+  .header p {
+    margin-top:.5rem; font-size:1.1rem;
+    color:rgba(255,255,255,.9); font-weight:700; position:relative;
+  }
+
+  .progress-wrap {
+    max-width:700px; margin:1.8rem auto .8rem; padding:0 1.5rem;
+  }
+  .progress-label {
+    font-size:1rem; font-weight:900; color:var(--muted);
+    margin-bottom:.5rem; text-align:center;
+  }
+  .progress-bar-bg {
+    background:#e5e7eb; border-radius:999px; height:22px; overflow:hidden;
+  }
+  .progress-bar-fill {
+    background:linear-gradient(90deg,var(--yellow),var(--orange));
+    height:100%; border-radius:999px;
+    transition:width .5s cubic-bezier(.4,0,.2,1); width:0%;
+  }
+
+  .tap-hint {
+    text-align:center; font-size:.9rem; font-weight:900;
+    color:var(--muted); margin:.4rem 0 1.2rem; letter-spacing:.03em;
+  }
+
+  .steps {
+    max-width:700px; margin:0 auto; padding:0 1.2rem;
+    display:flex; flex-direction:column; gap:1rem;
+  }
+
+  .step {
+    border-radius:22px;
+    padding:1.4rem 1.5rem;
+    display:flex; flex-direction:column; gap:.8rem;
+    cursor:pointer; position:relative; overflow:hidden;
+    border:4px solid transparent;
+    transition:transform .2s, box-shadow .2s, opacity .35s;
+    user-select:none;
+  }
+  .step:active { transform:scale(.96); }
+
+  .step[data-color="yellow"] { background:#FFFAE8; border-color:var(--yellow); }
+  .step[data-color="coral"]  { background:#FFF0F0; border-color:var(--coral);  }
+  .step[data-color="teal"]   { background:#E8FAFA; border-color:var(--teal);   }
+  .step[data-color="purple"] { background:#F3EEFF; border-color:var(--purple); }
+  .step[data-color="orange"] { background:#FFF3EA; border-color:var(--orange); }
+  .step[data-color="green"]  { background:#EDFAEE; border-color:var(--green);  }
+  .step[data-color="blue"]   { background:#EAF3FF; border-color:var(--blue);   }
+
+  .step.done { opacity:.5; transform:scale(.98); }
+  .step.done .step-title {
+    text-decoration:line-through;
+    text-decoration-color:rgba(0,0,0,.35);
+  }
+
+  .step-num {
+    position:absolute; top:1rem; right:1rem;
+    width:46px; height:46px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; font-weight:900;
+    color:white; transition:all .3s;
+    box-shadow:0 3px 8px rgba(0,0,0,.15);
+  }
+  .step[data-color="yellow"] .step-num { background:var(--yellow); color:#5a4000; }
+  .step[data-color="coral"]  .step-num { background:var(--coral);  }
+  .step[data-color="teal"]   .step-num { background:var(--teal);   }
+  .step[data-color="purple"] .step-num { background:var(--purple); }
+  .step[data-color="orange"] .step-num { background:var(--orange); }
+  .step[data-color="green"]  .step-num { background:var(--green);  }
+  .step[data-color="blue"]   .step-num { background:var(--blue);   }
+  .step.done .step-num { background:#c0c0d0 !important; color:white !important; font-size:1.9rem; }
+
+  .step-content { flex:1; min-width:0; }
+  .step-icon { font-size:3rem; display:block; margin-bottom:.3rem; line-height:1; }
+  .step-title { font-size:clamp(1.25rem,4vw,1.65rem); font-weight:900; line-height:1.2; color:var(--text); }
+  .step-desc  { margin-top:.4rem; font-size:clamp(1rem,2.5vw,1.1rem); font-weight:700; color:var(--muted); line-height:1.6; }
+
+  .stog-badge {
+    display:inline-flex; align-items:center; gap:.4rem;
+    background:#c62828; color:white; border-radius:12px;
+    padding:.35rem 1rem; font-size:1rem; font-weight:900; margin-top:.6rem;
+  }
+  .stog-badge .line-circle {
+    width:26px; height:26px; border-radius:50%;
+    background:white; color:#c62828; font-weight:900; font-size:.95rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .tags { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.7rem; }
+  .tag {
+    border-radius:999px; padding:.3rem .85rem;
+    font-size:.88rem; font-weight:900; color:var(--text);
+    background:rgba(255,255,255,.85); border:2px solid rgba(0,0,0,.1);
+  }
+
+  .scene {
+    width:100%; margin-top:.9rem; border-radius:16px;
+    overflow:hidden; border:3px solid rgba(0,0,0,.06); display:block;
+  }
+
+  #congrats {
+    display:none; text-align:center;
+    padding:3rem 1.5rem; max-width:600px; margin:0 auto;
+  }
+  #congrats .big { font-size:5rem; animation:spin .6s ease forwards; }
+  @keyframes spin { from{transform:rotate(-20deg) scale(.5)} to{transform:rotate(0) scale(1)} }
+  #congrats h2 { font-size:2.5rem; font-weight:900; color:var(--teal); margin:1rem 0 .5rem; }
+  #congrats p  { font-size:1.2rem; color:var(--muted); font-weight:700; }
+</style>
+</head>
+<body>
+
+<div class="school-banner">🏫 Ådalens skole, Frederikssund · Zoo-tur 🦁</div>
+
+<div class="header">
+  <!-- Zootårnet SVG illustration -->
+  <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:340px;display:block;margin:0 auto;">
+    <!-- Sky -->
+    <rect width="300" height="220" fill="#4ECDC4"/>
+    <!-- Cloud -->
+    <ellipse cx="60"  cy="40" rx="32" ry="14" fill="white" opacity=".6"/>
+    <ellipse cx="240" cy="32" rx="36" ry="15" fill="white" opacity=".6"/>
+    <!-- Ground -->
+    <rect x="0" y="185" width="300" height="35" fill="#6BCB77"/>
+    <!-- Tree left -->
+    <rect x="44" y="155" width="8" height="32" fill="#5d4037"/>
+    <circle cx="48" cy="145" r="24" fill="#43a047"/>
+    <!-- Tree right -->
+    <rect x="248" y="158" width="8" height="30" fill="#5d4037"/>
+    <circle cx="252" cy="148" r="22" fill="#43a047"/>
+
+    <!-- TOWER: tapered body -->
+    <polygon points="138,185 162,185 158,100 142,100" fill="#C49A28"/>
+    <!-- Single X brace -->
+    <line x1="140" y1="175" x2="160" y2="115" stroke="#8B6914" stroke-width="2"/>
+    <line x1="160" y1="175" x2="140" y2="115" stroke="#8B6914" stroke-width="2"/>
+    <!-- Platform -->
+    <rect x="130" y="93" width="40" height="8" fill="#6d4c41" rx="2"/>
+    <!-- Roof -->
+    <polygon points="130,93 170,93 162,72 138,72" fill="#8B6914"/>
+    <!-- Spire -->
+    <polygon points="142,72 158,72 152,52 148,52" fill="#A0782A"/>
+    <!-- Flagpole -->
+    <line x1="150" y1="52" x2="150" y2="28" stroke="#5d4037" stroke-width="2"/>
+    <!-- Flag -->
+    <polygon points="150,28 170,34 150,40" fill="#FF6B6B"/>
+    <!-- ZOO badge -->
+    <circle cx="150" cy="140" r="18" fill="#c62828"/>
+    <circle cx="150" cy="140" r="13" fill="white"/>
+    <text x="150" y="145" font-family="Arial,sans-serif" font-size="10" font-weight="900" fill="#c62828" text-anchor="middle">ZOO</text>
+  </svg>
+  <h1>Min dag i Zoo!</h1>
+  <p>10 skridt — ét ad gangen</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-label" id="progressLabel">0 af 9 gjort</div>
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+</div>
+
+<p class="tap-hint">👆 Tryk på et skridt når det er gjort</p>
+
+<div class="steps" id="stepsContainer">
+
+  <!-- 1 -->
+  <div class="step" data-color="yellow" id="step-0" onclick="toggleDone(0)">
+    <div class="step-num" id="num-0">1</div>
+    <div class="step-content">
+      <span class="step-icon">🏫</span>
+      <div class="step-title">Vi går fra skolen</div>
+      <div class="step-desc">Vi går alle ud. Vi går mod toget. Hold dig tæt på klassen.</div>
+      <div class="tags">
+        <span class="tag">🚶 Vi går</span>
+        <span class="tag">👫 Klassen er med</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#E8F5FF"/>
+        <circle cx="80" cy="36" r="28" fill="white" opacity=".8"/>
+        <circle cx="115" cy="26" r="22" fill="white" opacity=".8"/>
+        <circle cx="400" cy="40" r="20" fill="white" opacity=".7"/>
+        <circle cx="435" cy="28" r="26" fill="white" opacity=".7"/>
+        <rect x="0" y="132" width="500" height="33" fill="#6BCB77"/>
+        <rect x="115" y="55" width="210" height="87" fill="#FF8C42" rx="6"/>
+        <rect x="95" y="40" width="250" height="20" fill="#FF6B6B" rx="5"/>
+        <rect x="138" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="192" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="246" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="192" y="105" width="56" height="37" fill="#8d6e63" rx="4"/>
+        <circle cx="241" cy="125" r="4" fill="#FFD93D"/>
+        <line x1="219" y1="15" x2="219" y2="40" stroke="#795548" stroke-width="3"/>
+        <rect x="219" y="15" width="28" height="16" fill="#FF6B6B"/>
+        <circle cx="365" cy="123" r="11" fill="#FFCC80"/>
+        <line x1="365" y1="134" x2="365" y2="154" stroke="#795548" stroke-width="3"/>
+        <line x1="365" y1="140" x2="353" y2="151" stroke="#795548" stroke-width="2"/>
+        <line x1="365" y1="140" x2="377" y2="151" stroke="#795548" stroke-width="2"/>
+        <circle cx="392" cy="120" r="11" fill="#FFCC80"/>
+        <line x1="392" y1="131" x2="392" y2="151" stroke="#795548" stroke-width="3"/>
+        <line x1="392" y1="137" x2="380" y2="148" stroke="#795548" stroke-width="2"/>
+        <line x1="392" y1="137" x2="404" y2="148" stroke="#795548" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="step" data-color="coral" id="step-1" onclick="toggleDone(1)">
+    <div class="step-num" id="num-1">2</div>
+    <div class="step-content">
+      <span class="step-icon">🚉</span>
+      <div class="step-title">Vi er på stationen</div>
+      <div class="step-desc">Vi går ind. Vi venter på toget. Det larmer lidt.</div>
+      <div class="tags">
+        <span class="tag">👫 Stå med klassen</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#FFF0F0"/>
+        <rect x="0" y="118" width="500" height="47" fill="#bdbdbd"/>
+        <rect x="0" y="112" width="500" height="10" fill="#9e9e9e"/>
+        <rect x="45" y="42" width="190" height="80" fill="#FF8C42" rx="6"/>
+        <rect x="35" y="30" width="210" height="18" fill="#FF6B6B" rx="5"/>
+        <circle cx="140" cy="65" r="20" fill="white" stroke="#FF6B6B" stroke-width="3"/>
+        <line x1="140" y1="65" x2="140" y2="51" stroke="#333" stroke-width="2"/>
+        <line x1="140" y1="65" x2="152" y2="65" stroke="#333" stroke-width="2"/>
+        <rect x="60" y="82" width="175" height="28" fill="#c62828" rx="5"/>
+        <text x="147" y="101" font-family="Arial,sans-serif" font-size="14" font-weight="900" fill="white" text-anchor="middle">FREDERIKSSUND ST.</text>
+        <line x1="0" y1="128" x2="500" y2="128" stroke="#555" stroke-width="5"/>
+        <line x1="0" y1="139" x2="500" y2="139" stroke="#555" stroke-width="5"/>
+        <rect x="18" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="58" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="98" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="138" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="178" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="218" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="258" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="298" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="338" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="378" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="418" y="125" width="9" height="17" fill="#5d4037"/>
+        <rect x="458" y="125" width="9" height="17" fill="#5d4037"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="step" data-color="teal" id="step-2" onclick="toggleDone(2)">
+    <div class="step-num" id="num-2">3</div>
+    <div class="step-content">
+      <span class="step-icon">🚆</span>
+      <div class="step-title">Vi er på toget!</div>
+      <div class="step-desc">Vi stiger på det røde tog. Vi sidder ned. Turen tager 40 min. Det er som halvdelen af en stor tegnefilm.</div>
+      <div class="stog-badge"><div class="line-circle">C</div> S-tog linje C<br>Frederikssund → Valby</div>
+      <div class="tags">
+        <span class="tag">🔴 Rødt tog</span>
+        <span class="tag">💺 Sid ned</span>
+        <span class="tag">⏱️ 40 min = halvdelen af en stor tegnefilm</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#E8FAFA"/>
+        <rect x="0" y="0" width="500" height="90" fill="#d0f0f7"/>
+        <rect x="0" y="126" width="500" height="39" fill="#6BCB77"/>
+        <rect x="0" y="116" width="500" height="7" fill="#78909c"/>
+        <rect x="0" y="129" width="500" height="7" fill="#78909c"/>
+        <rect x="25" y="74" width="370" height="52" fill="#c62828" rx="12"/>
+        <rect x="48" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="100" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="152" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="204" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="256" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="308" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="180" y="78" width="7" height="48" fill="#b71c1c"/>
+        <circle cx="55" cy="64" r="18" fill="#c62828" stroke="white" stroke-width="3"/>
+        <text x="55" y="71" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="white" text-anchor="middle">S</text>
+        <circle cx="88"  cy="124" r="11" fill="#424242"/><circle cx="88"  cy="124" r="5" fill="#757575"/>
+        <circle cx="170" cy="124" r="11" fill="#424242"/><circle cx="170" cy="124" r="5" fill="#757575"/>
+        <circle cx="272" cy="124" r="11" fill="#424242"/><circle cx="272" cy="124" r="5" fill="#757575"/>
+        <circle cx="354" cy="124" r="11" fill="#424242"/><circle cx="354" cy="124" r="5" fill="#757575"/>
+        <circle cx="430" cy="48" r="38" fill="#c62828"/>
+        <circle cx="430" cy="48" r="30" fill="white"/>
+        <text x="430" y="59" font-family="Arial,sans-serif" font-size="30" font-weight="900" fill="#c62828" text-anchor="middle">C</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="step" data-color="green" id="step-3" onclick="toggleDone(3)">
+    <div class="step-num" id="num-3">4</div>
+    <div class="step-content">
+      <span class="step-icon">🚶</span>
+      <div class="step-title">Vi går til Zoo</div>
+      <div class="step-desc">Vi går i Søndermarken. Der er biler på vejen.</div>
+      <div class="tags">
+        <span class="tag">🌳 Søndermarken</span>
+        <span class="tag">🚶 20 min = 1 tegnefilms afsnit</span>
+        <span class="tag">🚗 Der er biler</span>
+        <span class="tag">👨‍🏫 Lærerne er med</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#EDFAEE"/>
+        <rect x="0" y="132" width="500" height="33" fill="#6BCB77"/>
+        <path d="M20,148 Q130,92 250,112 Q370,132 480,82" stroke="#bcaaa4" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <circle cx="78"  cy="95"  r="30" fill="#4ECDC4"/>
+        <rect   x="74"   y="113" width="8" height="24" fill="#5d4037"/>
+        <circle cx="162" cy="85"  r="24" fill="#6BCB77"/>
+        <rect   x="158"  y="101" width="8" height="20" fill="#5d4037"/>
+        <circle cx="305" cy="90"  r="28" fill="#4ECDC4"/>
+        <rect   x="301"  y="107" width="8" height="24" fill="#5d4037"/>
+        <circle cx="403" cy="80"  r="22" fill="#6BCB77"/>
+        <rect   x="399"  y="95"  width="8" height="20" fill="#5d4037"/>
+        <circle cx="232" cy="109" r="10" fill="#FFCC80"/>
+        <line x1="232" y1="119" x2="232" y2="140" stroke="#795548" stroke-width="3"/>
+        <line x1="232" y1="125" x2="221" y2="136" stroke="#795548" stroke-width="2"/>
+        <line x1="232" y1="125" x2="243" y2="136" stroke="#795548" stroke-width="2"/>
+        <text x="462" y="71" font-size="22" text-anchor="middle">🦁</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="step" data-color="orange" id="step-4" onclick="toggleDone(4)">
+    <div class="step-num" id="num-4">5</div>
+    <div class="step-content">
+      <span class="step-icon">🦁</span>
+      <div class="step-title">Vi ser dyr i Zoo!</div>
+      <div class="step-desc">Vi går rundt og ser dyr.</div>
+      <div class="tags">
+        <span class="tag">🐾 Mange dyr</span>
+        <span class="tag">👫 Bliv hos klassen</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#FFF3EA"/>
+        <rect x="0" y="0"   width="500" height="80"  fill="#d0f0f7"/>
+        <rect x="0" y="135" width="500" height="30"  fill="#6BCB77"/>
+        <rect x="185" y="32" width="130" height="85" fill="#6BCB77" rx="6"/>
+        <rect x="174" y="21" width="152" height="20" fill="#388e3c" rx="5"/>
+        <text x="250" y="37" font-family="Arial,sans-serif" font-size="14" font-weight="900" fill="white" text-anchor="middle">ZOO</text>
+        <rect x="210" y="62" width="55" height="55" fill="#8d6e63" rx="4"/>
+        <circle cx="257" cy="91" r="4" fill="#FFD93D"/>
+        <text x="72"  y="120" font-size="38" text-anchor="middle">🦒</text>
+        <text x="152" y="126" font-size="34" text-anchor="middle">🐘</text>
+        <text x="348" y="124" font-size="36" text-anchor="middle">🐧</text>
+        <text x="428" y="118" font-size="32" text-anchor="middle">🦁</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="step" data-color="purple" id="step-5" onclick="toggleDone(5)">
+    <div class="step-num" id="num-5">6</div>
+    <div class="step-content">
+      <span class="step-icon">🥪</span>
+      <div class="step-title">Vi spiser mad</div>
+      <div class="step-desc">Vi sidder ned. Vi tager vores mad frem. Vi spiser.</div>
+      <div class="tags">
+        <span class="tag">🥪 Tag din mad</span>
+        <span class="tag">🪑 Sid ned</span>
+        <span class="tag">💧 Drik noget</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="150" fill="#F3EEFF"/>
+        <ellipse cx="250" cy="147" rx="260" ry="28" fill="#6BCB77"/>
+        <circle cx="420" cy="36" r="32" fill="#FFD93D"/>
+        <circle cx="78"  cy="65" r="32" fill="#4ECDC4"/>
+        <rect   x="72"   y="89" width="12" height="28" fill="#5d4037"/>
+        <rect x="125" y="82" width="250" height="52" fill="#FF8C42" rx="10"/>
+        <rect x="125" y="82" width="62"  height="26" fill="#FF6B6B"/>
+        <rect x="187" y="108" width="62" height="26" fill="#FF6B6B"/>
+        <rect x="249" y="82" width="62"  height="26" fill="#FF6B6B"/>
+        <rect x="311" y="108" width="64" height="26" fill="#FF6B6B"/>
+        <text x="168" y="105" font-size="30" text-anchor="middle">🥪</text>
+        <text x="250" y="105" font-size="28" text-anchor="middle">🍎</text>
+        <text x="332" y="105" font-size="30" text-anchor="middle">🧃</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="step" data-color="blue" id="step-6" onclick="toggleDone(6)">
+    <div class="step-num" id="num-6">7</div>
+    <div class="step-content">
+      <span class="step-icon">🐾</span>
+      <div class="step-title">Vi ser flere dyr</div>
+      <div class="step-desc">Vi ser på flere dyr. Vi går rundt.</div>
+      <div class="tags">
+        <span class="tag">🐾 Flere dyr</span>
+        <span class="tag">🚶 Vi går rundt</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="140" fill="#EAF3FF"/>
+        <rect x="0" y="105" width="500" height="35" fill="#6BCB77"/>
+        <text x="55"  y="97"  font-size="42" text-anchor="middle">🐘</text>
+        <text x="150" y="101" font-size="38" text-anchor="middle">🐊</text>
+        <text x="250" y="97"  font-size="40" text-anchor="middle">🐒</text>
+        <text x="350" y="100" font-size="38" text-anchor="middle">🦘</text>
+        <text x="450" y="95"  font-size="34" text-anchor="middle">🐼</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="step" data-color="coral" id="step-7" onclick="toggleDone(7)">
+    <div class="step-num" id="num-7">8</div>
+    <div class="step-content">
+      <span class="step-icon">🚶</span>
+      <div class="step-title">Vi går til toget</div>
+      <div class="step-desc">Zoo er slut. Vi går til Valby Station. Der er biler på vejen. Bliv tæt på klassen.</div>
+      <div class="tags">
+        <span class="tag">👫 Bliv med klassen</span>
+        <span class="tag">🚶 20 min = 1 tegnefilms afsnit</span>
+        <span class="tag">🚗 Der er biler</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <!-- sky -->
+        <rect width="500" height="165" fill="#FFF0F0"/>
+        <!-- pavement -->
+        <rect x="0" y="110" width="500" height="55" fill="#9e9e9e"/>
+        <!-- road markings -->
+        <rect x="0" y="128" width="500" height="6" fill="#757575"/>
+        <rect x="0" y="140" width="500" height="6" fill="#757575"/>
+        <!-- dashed centre line -->
+        <rect x="20"  y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <rect x="100" y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <rect x="180" y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <rect x="260" y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <rect x="340" y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <rect x="420" y="134" width="40" height="4" fill="#FFD93D" rx="2"/>
+        <!-- pavement strip top -->
+        <rect x="0" y="108" width="500" height="6" fill="#bdbdbd"/>
+        <!-- buildings background -->
+        <rect x="0"   y="40" width="100" height="72" fill="#FF8C42" rx="4"/>
+        <rect x="110" y="55" width="80"  height="57" fill="#4ECDC4" rx="4"/>
+        <rect x="200" y="30" width="90"  height="82" fill="#FF8C42" rx="4"/>
+        <rect x="300" y="50" width="70"  height="62" fill="#A78BFA" rx="4"/>
+        <rect x="380" y="38" width="85"  height="74" fill="#4ECDC4" rx="4"/>
+        <!-- building windows -->
+        <rect x="15"  y="52" width="18" height="14" fill="#b3e5fc" rx="2"/>
+        <rect x="42"  y="52" width="18" height="14" fill="#b3e5fc" rx="2"/>
+        <rect x="15"  y="74" width="18" height="14" fill="#b3e5fc" rx="2"/>
+        <rect x="42"  y="74" width="18" height="14" fill="#b3e5fc" rx="2"/>
+        <rect x="120" y="64" width="14" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="142" y="64" width="14" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="215" y="42" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="240" y="42" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="215" y="62" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="240" y="62" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="315" y="60" width="14" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="338" y="60" width="14" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="393" y="50" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="418" y="50" width="16" height="12" fill="#b3e5fc" rx="2"/>
+        <!-- car 1 red -->
+        <rect x="30" y="112" width="72" height="30" fill="#FF6B6B" rx="6"/>
+        <rect x="40" y="105" width="48" height="18" fill="#e05555" rx="4"/>
+        <rect x="44" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="66" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <circle cx="48"  cy="143" r="8" fill="#333"/><circle cx="48"  cy="143" r="4" fill="#757575"/>
+        <circle cx="88"  cy="143" r="8" fill="#333"/><circle cx="88"  cy="143" r="4" fill="#757575"/>
+        <rect x="98" y="118" width="8" height="6" fill="#FFD93D" rx="1"/>
+        <!-- car 2 blue -->
+        <rect x="200" y="112" width="72" height="30" fill="#4D96FF" rx="6"/>
+        <rect x="210" y="105" width="48" height="18" fill="#3a7dd4" rx="4"/>
+        <rect x="214" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="236" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <circle cx="218" cy="143" r="8" fill="#333"/><circle cx="218" cy="143" r="4" fill="#757575"/>
+        <circle cx="258" cy="143" r="8" fill="#333"/><circle cx="258" cy="143" r="4" fill="#757575"/>
+        <rect x="268" y="118" width="8" height="6" fill="#FFD93D" rx="1"/>
+        <!-- car 3 green -->
+        <rect x="360" y="112" width="72" height="30" fill="#6BCB77" rx="6"/>
+        <rect x="370" y="105" width="48" height="18" fill="#55b063" rx="4"/>
+        <rect x="374" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <rect x="396" y="107" width="18" height="12" fill="#b3e5fc" rx="2"/>
+        <circle cx="378" cy="143" r="8" fill="#333"/><circle cx="378" cy="143" r="4" fill="#757575"/>
+        <circle cx="418" cy="143" r="8" fill="#333"/><circle cx="418" cy="143" r="4" fill="#757575"/>
+        <rect x="428" y="118" width="8" height="6" fill="#FFD93D" rx="1"/>
+        <!-- pedestrian crossing stripes -->
+        <rect x="140" y="110" width="50" height="8" fill="white" opacity=".7"/>
+        <rect x="150" y="118" width="50" height="8" fill="white" opacity=".5"/>
+        <!-- walking person on pavement -->
+        <circle cx="158" cy="96" r="8" fill="#FFCC80"/>
+        <line x1="158" y1="104" x2="158" y2="118" stroke="#795548" stroke-width="3"/>
+        <line x1="158" y1="109" x2="150" y2="117" stroke="#795548" stroke-width="2"/>
+        <line x1="158" y1="109" x2="166" y2="117" stroke="#795548" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="step" data-color="teal" id="step-8" onclick="toggleDone(8)">
+    <div class="step-num" id="num-8">9</div>
+    <div class="step-content">
+      <span class="step-icon">🚆</span>
+      <div class="step-title">Vi tager toget hjem</div>
+      <div class="step-desc">Vi stiger på det røde tog. Vi sidder ned. Turen tager 40 min. Det er som halvdelen af en stor tegnefilm.</div>
+      <div class="stog-badge"><div class="line-circle">C</div> S-tog linje C<br>Valby → Frederikssund</div>
+      <div class="tags">
+        <span class="tag">🔴 Samme tog</span>
+        <span class="tag">💺 Sid ned</span>
+        <span class="tag">⏱️ 40 min = halvdelen af en stor tegnefilm</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#E8FAFA"/>
+        <rect x="0" y="0" width="500" height="90" fill="#d0f0f7"/>
+        <rect x="0" y="126" width="500" height="39" fill="#6BCB77"/>
+        <rect x="0" y="116" width="500" height="7" fill="#78909c"/>
+        <rect x="0" y="129" width="500" height="7" fill="#78909c"/>
+        <rect x="25" y="74" width="370" height="52" fill="#c62828" rx="12"/>
+        <rect x="48" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="100" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="152" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="204" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="256" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="308" y="82" width="40" height="28" fill="#b3e5fc" rx="5"/>
+        <rect x="180" y="78" width="7" height="48" fill="#b71c1c"/>
+        <circle cx="55" cy="64" r="18" fill="#c62828" stroke="white" stroke-width="3"/>
+        <text x="55" y="71" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="white" text-anchor="middle">S</text>
+        <circle cx="88"  cy="124" r="11" fill="#424242"/><circle cx="88"  cy="124" r="5" fill="#757575"/>
+        <circle cx="170" cy="124" r="11" fill="#424242"/><circle cx="170" cy="124" r="5" fill="#757575"/>
+        <circle cx="272" cy="124" r="11" fill="#424242"/><circle cx="272" cy="124" r="5" fill="#757575"/>
+        <circle cx="354" cy="124" r="11" fill="#424242"/><circle cx="354" cy="124" r="5" fill="#757575"/>
+        <circle cx="430" cy="48" r="38" fill="#c62828"/>
+        <circle cx="430" cy="48" r="30" fill="white"/>
+        <text x="430" y="59" font-family="Arial,sans-serif" font-size="30" font-weight="900" fill="#c62828" text-anchor="middle">C</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="step" data-color="yellow" id="step-9" onclick="toggleDone(9)">
+    <div class="step-num" id="num-9">10</div>
+    <div class="step-content">
+      <span class="step-icon">🏫</span>
+      <div class="step-title">Vi går tilbage til skolen</div>
+      <div class="step-desc">Vi stiger af toget. Vi går til Ådalens skole. Vi går til hus G.</div>
+      <div class="tags">
+        <span class="tag">🚶 Vi går</span>
+        <span class="tag">👫 Klassen er med</span>
+        <span class="tag">🏠 Hus G</span>
+      </div>
+      <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="165" fill="#E8F5FF"/>
+        <circle cx="80" cy="36" r="28" fill="white" opacity=".8"/>
+        <circle cx="115" cy="26" r="22" fill="white" opacity=".8"/>
+        <circle cx="400" cy="40" r="20" fill="white" opacity=".7"/>
+        <circle cx="435" cy="28" r="26" fill="white" opacity=".7"/>
+        <rect x="0" y="132" width="500" height="33" fill="#6BCB77"/>
+        <rect x="115" y="55" width="210" height="87" fill="#FF8C42" rx="6"/>
+        <rect x="95" y="40" width="250" height="20" fill="#FF6B6B" rx="5"/>
+        <rect x="138" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="192" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="246" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/>
+        <rect x="192" y="105" width="56" height="37" fill="#8d6e63" rx="4"/>
+        <circle cx="241" cy="125" r="4" fill="#FFD93D"/>
+        <line x1="219" y1="15" x2="219" y2="40" stroke="#795548" stroke-width="3"/>
+        <rect x="219" y="15" width="28" height="16" fill="#FF6B6B"/>
+        <!-- G sign on building -->
+        <rect x="290" y="68" width="30" height="22" fill="#FFD93D" rx="4"/>
+        <text x="305" y="84" font-family="Arial,sans-serif" font-size="16" font-weight="900" fill="#5a4000" text-anchor="middle">G</text>
+        <!-- people walking toward school -->
+        <circle cx="410" cy="123" r="11" fill="#FFCC80"/>
+        <line x1="410" y1="134" x2="410" y2="154" stroke="#795548" stroke-width="3"/>
+        <line x1="410" y1="140" x2="398" y2="151" stroke="#795548" stroke-width="2"/>
+        <line x1="410" y1="140" x2="422" y2="151" stroke="#795548" stroke-width="2"/>
+        <circle cx="437" cy="120" r="11" fill="#FFCC80"/>
+        <line x1="437" y1="131" x2="437" y2="151" stroke="#795548" stroke-width="3"/>
+        <line x1="437" y1="137" x2="425" y2="148" stroke="#795548" stroke-width="2"/>
+        <line x1="437" y1="137" x2="449" y2="148" stroke="#795548" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<div id="congrats">
+  <div class="big">🏆</div>
+  <h2>Alle skridt er gjort!</h2>
+  <p>Vi er tilbage på Ådalens skole i hus G. 🦁</p>
+</div>
+
+<script>
+  const TOTAL = 10;
+  const done = new Array(TOTAL).fill(false);
+
+  function toggleDone(idx) {
+    done[idx] = !done[idx];
+    render();
+  }
+
+  function render() {
+    let count = 0;
+    for (let i = 0; i < TOTAL; i++) {
+      const el  = document.getElementById('step-' + i);
+      const num = document.getElementById('num-' + i);
+      if (done[i]) {
+        el.classList.add('done');
+        num.textContent = '✓';
+        count++;
+      } else {
+        el.classList.remove('done');
+        num.textContent = i + 1;
+      }
+    }
+    const pct = Math.round((count / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = count + ' af ' + TOTAL + ' gjort';
+
+    if (count === TOTAL) {
+      setTimeout(() => {
+        document.getElementById('stepsContainer').style.display = 'none';
+        document.querySelector('.tap-hint').style.display = 'none';
+        document.getElementById('congrats').style.display = 'block';
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressLabel').textContent = '🎉 Vi er færdige!';
+        window.scrollTo({top:0, behavior:'smooth'});
+      }, 400);
+    }
+  }
+
+  render();
+</script>
+</body>
+</html>
+
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
