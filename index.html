@@ -38,11 +38,31 @@
   .school-banner {
     background: var(--blue);
     color: white;
-    text-align: center;
-    padding: .7rem 1rem;
-    font-size: .95rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .6rem 1rem;
+    font-size: .9rem;
     font-weight: 900;
     letter-spacing: .03em;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .school-banner .print-btn {
+    background: #FF8C42;
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: .5rem 1.2rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: .85rem;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
   }
 
   .header {
@@ -187,7 +207,7 @@
   #congrats p  { font-size:1.2rem; color:var(--muted); font-weight:700; }
 
   /* ── Print button ── */
-  .print-btn-wrap { text-align:center; padding:1.2rem 0 .5rem; display:flex; justify-content:center; gap:.6rem; flex-wrap:nowrap; }
+  .print-btn-wrap { text-align:center; padding:.7rem 1rem; display:flex; justify-content:center; gap:.6rem; flex-wrap:nowrap; position:sticky; top:0; z-index:100; background:var(--bg); box-shadow:0 2px 8px rgba(0,0,0,.08); }
   .print-btn {
     background:var(--teal); color:white; border:none; border-radius:999px;
     padding:.6rem 1.1rem; font-family:'Nunito',sans-serif; font-size:.85rem;
@@ -198,21 +218,25 @@
   /* ── Print preview overlay ── */
   #printOverlay {
     display:none; position:fixed; inset:0; background:#444;
-    z-index:9999; overflow-y:auto; padding:24px 0;
+    z-index:9999; flex-direction:column;
   }
+  #printOverlay.active { display:flex; }
   .print-overlay-bar {
     display:flex; justify-content:center; gap:12px;
-    position:sticky; top:0; z-index:10;
+    flex-shrink:0;
     background:#444; padding:12px 0 14px;
-    margin-bottom:16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.3);
   }
   .print-overlay-bar button {
     border:none; border-radius:999px; padding:.65rem 2rem;
     font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; cursor:pointer;
   }
-  .btn-do-print      { background:#4ECDC4; color:white; }
+  .btn-do-print      { background:#FF8C42; color:white; }
   .btn-close-preview { background:white; color:#333; }
   .btn-download-pdf  { background:#FF8C42; color:white; }
+  #printScrollArea {
+    flex:1; overflow-y:auto; padding:20px;
+  }
 
   /* Wrapper scales the A4 sheet to fit any screen */
   .sheet-scaler {
@@ -313,6 +337,9 @@
       overflow: visible !important;
       height: auto !important;
     }
+    #printScrollArea {
+      overflow: visible !important;
+    }
 
     /* Hide the button bar and tip */
     .print-overlay-bar { display: none !important; }
@@ -326,10 +353,12 @@
       page-break-after: always !important;
       break-after: page !important;
     }
-    .sheet-scaler:last-child {
+    .sheet-scaler:last-of-type {
       page-break-after: avoid !important;
       break-after: avoid !important;
     }
+    #downloadTip { display: none !important; }
+    #printOverlay > *:not(.sheet-scaler):not(.print-overlay-bar) { display: none !important; }
 
     /* Each A4 sheet: exactly 297×210mm landscape */
     .print-sheet {
@@ -357,19 +386,18 @@
 </head>
 <body>
 
-<div class="school-banner">🏫 Ådalens skole, Frederikssund · Zoo-tur 🦁</div>
-
-<div class="print-btn-wrap">
-  <button class="print-btn" onclick="openPrintPreview()">👁️ Se preview</button>
-  <button class="print-btn" style="background:var(--orange);" onclick="openPrintPage()">🖨️ Print / Gem PDF</button>
+<div class="school-banner">
+  <span>Ådalens skole, Frederikssund · Zoo-tur 🦁</span>
+  <button class="print-btn" onclick="openPrintPreview()">💾 Gem som print version</button>
 </div>
 
 <!-- PRINT PREVIEW OVERLAY -->
 <div id="printOverlay">
   <div class="print-overlay-bar">
     <button class="btn-close-preview" onclick="closePrintPreview()">✕ Luk</button>
-    <button class="btn-do-print" onclick="doPrintNow()">🖨️ Print nu</button>
+    <button class="btn-do-print" onclick="doPrintNow()">⬇️ Gem som PDF</button>
   </div>
+  <div id="printScrollArea">
 
   <!-- Side 1: kort 1-4 -->
   <div class="sheet-scaler"><div class="print-sheet">
@@ -381,10 +409,10 @@
 
   <!-- Side 2: kort 5-8 -->
   <div class="sheet-scaler"><div class="print-sheet">
-    <div class="pcard orange"><div class="pcard-top"><span class="pcard-icon">🦁</span><div><div class="pcard-title">Vi ser dyr i Zoo!</div><div class="pcard-desc">Vi går rundt og ser dyr.</div><div class="ptags"><span class="ptag">🐾 Mange dyr</span><span class="ptag">👫 Bliv hos klassen</span></div></div><div class="pcard-num">5</div></div><svg class="pscene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="165" fill="#FFF3EA"/><rect x="0" y="0" width="500" height="80" fill="#d0f0f7"/><rect x="0" y="135" width="500" height="30" fill="#6BCB77"/><rect x="185" y="32" width="130" height="85" fill="#6BCB77" rx="6"/><rect x="174" y="21" width="152" height="20" fill="#388e3c" rx="5"/><text x="250" y="37" font-family="Arial" font-size="14" font-weight="900" fill="white" text-anchor="middle">ZOO</text><text x="72" y="120" font-size="38" text-anchor="middle">🦒</text><text x="152" y="126" font-size="34" text-anchor="middle">🐘</text><text x="348" y="124" font-size="36" text-anchor="middle">🐧</text><text x="428" y="118" font-size="32" text-anchor="middle">🦁</text></svg></div>
+    <div class="pcard orange"><div class="pcard-top"><span class="pcard-icon">🦁</span><div><div class="pcard-title">Vi ser dyr i Zoo!</div><div class="pcard-desc">Vi går rundt og ser dyr.</div><div class="ptags"><span class="ptag">🐾 Mange dyr</span><span class="ptag">👫 Bliv hos din venskabsklasse gruppe</span></div></div><div class="pcard-num">5</div></div><svg class="pscene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="165" fill="#FFF3EA"/><rect x="0" y="0" width="500" height="80" fill="#d0f0f7"/><rect x="0" y="135" width="500" height="30" fill="#6BCB77"/><rect x="185" y="32" width="130" height="85" fill="#6BCB77" rx="6"/><rect x="174" y="21" width="152" height="20" fill="#388e3c" rx="5"/><text x="250" y="37" font-family="Arial" font-size="14" font-weight="900" fill="white" text-anchor="middle">ZOO</text><text x="72" y="120" font-size="38" text-anchor="middle">🦒</text><text x="152" y="126" font-size="34" text-anchor="middle">🐘</text><text x="348" y="124" font-size="36" text-anchor="middle">🐧</text><text x="428" y="118" font-size="32" text-anchor="middle">🦁</text></svg></div>
     <div class="pcard purple"><div class="pcard-top"><span class="pcard-icon">🥪</span><div><div class="pcard-title">Vi spiser mad</div><div class="pcard-desc">Vi sidder ned. Vi tager vores mad frem. Vi spiser.</div><div class="ptags"><span class="ptag">🥪 Tag din mad</span><span class="ptag">🪑 Sid ned</span><span class="ptag">💧 Drik noget</span></div></div><div class="pcard-num">6</div></div><svg class="pscene" viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="150" fill="#F3EEFF"/><ellipse cx="250" cy="147" rx="260" ry="28" fill="#6BCB77"/><circle cx="420" cy="36" r="32" fill="#FFD93D"/><circle cx="78" cy="65" r="32" fill="#4ECDC4"/><rect x="125" y="82" width="250" height="52" fill="#FF8C42" rx="10"/><text x="168" y="105" font-size="30" text-anchor="middle">🥪</text><text x="250" y="105" font-size="28" text-anchor="middle">🍎</text><text x="332" y="105" font-size="30" text-anchor="middle">🧃</text></svg></div>
     <div class="pcard blue"><div class="pcard-top"><span class="pcard-icon">🐾</span><div><div class="pcard-title">Vi ser flere dyr</div><div class="pcard-desc">Vi ser på flere dyr. Vi går rundt.</div><div class="ptags"><span class="ptag">🐾 Flere dyr</span><span class="ptag">🚶 Vi går rundt</span></div></div><div class="pcard-num">7</div></div><svg class="pscene" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="140" fill="#EAF3FF"/><rect x="0" y="105" width="500" height="35" fill="#6BCB77"/><text x="55" y="97" font-size="42" text-anchor="middle">🐘</text><text x="150" y="101" font-size="38" text-anchor="middle">🐊</text><text x="250" y="97" font-size="40" text-anchor="middle">🐒</text><text x="350" y="100" font-size="38" text-anchor="middle">🦘</text><text x="450" y="95" font-size="34" text-anchor="middle">🐼</text></svg></div>
-    <div class="pcard coral"><div class="pcard-top"><span class="pcard-icon">🚶</span><div><div class="pcard-title">Vi går til toget</div><div class="pcard-desc">Zoo er slut. Vi går til Valby Station. Der er biler. Bliv tæt på klassen.</div><div class="ptags"><span class="ptag">👫 Bliv med klassen</span><span class="ptag">🚶 20 min = 1 tegnefilms afsnit</span><span class="ptag">🚗 Der er biler</span></div></div><div class="pcard-num">8</div></div><svg class="pscene" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="140" fill="#FFF0F0"/><rect x="0" y="90" width="500" height="50" fill="#9e9e9e"/><rect x="0" y="35" width="100" height="58" fill="#FF8C42" rx="4"/><rect x="110" y="45" width="80" height="48" fill="#4ECDC4" rx="4"/><rect x="200" y="25" width="90" height="67" fill="#FF8C42" rx="4"/><rect x="300" y="40" width="70" height="52" fill="#A78BFA" rx="4"/><rect x="30" y="92" width="66" height="28" fill="#FF6B6B" rx="5"/><circle cx="46" cy="121" r="7" fill="#333"/><circle cx="82" cy="121" r="7" fill="#333"/><rect x="200" y="92" width="66" height="28" fill="#4D96FF" rx="5"/><circle cx="218" cy="121" r="7" fill="#333"/><circle cx="254" cy="121" r="7" fill="#333"/><rect x="360" y="92" width="66" height="28" fill="#6BCB77" rx="5"/><circle cx="368" cy="121" r="7" fill="#333"/><circle cx="404" cy="121" r="7" fill="#333"/></svg></div>
+    <div class="pcard coral"><div class="pcard-top"><span class="pcard-icon">🚶</span><div><div class="pcard-title">Vi går til toget</div><div class="pcard-desc">Zoo er slut. Vi går til Valby Station. Der er biler. Bliv tæt på klassen.</div><div class="ptags"><span class="ptag">👫 Bliv med din venskabsklasse gruppe</span><span class="ptag">🚶 20 min = 1 tegnefilms afsnit</span><span class="ptag">🚗 Der er biler</span></div></div><div class="pcard-num">8</div></div><svg class="pscene" viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="140" fill="#FFF0F0"/><rect x="0" y="90" width="500" height="50" fill="#9e9e9e"/><rect x="0" y="35" width="100" height="58" fill="#FF8C42" rx="4"/><rect x="110" y="45" width="80" height="48" fill="#4ECDC4" rx="4"/><rect x="200" y="25" width="90" height="67" fill="#FF8C42" rx="4"/><rect x="300" y="40" width="70" height="52" fill="#A78BFA" rx="4"/><rect x="30" y="92" width="66" height="28" fill="#FF6B6B" rx="5"/><circle cx="46" cy="121" r="7" fill="#333"/><circle cx="82" cy="121" r="7" fill="#333"/><rect x="200" y="92" width="66" height="28" fill="#4D96FF" rx="5"/><circle cx="218" cy="121" r="7" fill="#333"/><circle cx="254" cy="121" r="7" fill="#333"/><rect x="360" y="92" width="66" height="28" fill="#6BCB77" rx="5"/><circle cx="368" cy="121" r="7" fill="#333"/><circle cx="404" cy="121" r="7" fill="#333"/></svg></div>
   </div></div>
 
   <!-- Side 3: kort 9-10 -->
@@ -393,6 +421,7 @@
     <div class="pcard yellow" style="height: calc((794px - 64px - 18px) / 2); max-height: calc((794px - 64px - 18px) / 2);"><div class="pcard-top"><span class="pcard-icon">🏫</span><div><div class="pcard-title">Vi går tilbage til skolen</div><div class="pcard-desc">Vi stiger af toget. Vi går til Ådalens skole. Vi går til hus G.</div><div class="ptags"><span class="ptag">🚶 Vi går</span><span class="ptag">👫 Klassen er med</span><span class="ptag">🏠 Hus G</span></div></div><div class="pcard-num">10</div></div><svg class="pscene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="165" fill="#E8F5FF"/><circle cx="80" cy="36" r="28" fill="white" opacity=".8"/><rect x="0" y="132" width="500" height="33" fill="#6BCB77"/><rect x="115" y="55" width="210" height="87" fill="#FF8C42" rx="6"/><rect x="95" y="40" width="250" height="20" fill="#FF6B6B" rx="5"/><rect x="138" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/><rect x="192" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/><rect x="246" y="73" width="38" height="38" fill="#4ECDC4" rx="4"/><rect x="192" y="105" width="56" height="37" fill="#8d6e63" rx="4"/><rect x="290" y="68" width="30" height="22" fill="#FFD93D" rx="4"/><text x="305" y="84" font-family="Arial" font-size="16" font-weight="900" fill="#5a4000" text-anchor="middle">G</text><circle cx="410" cy="123" r="11" fill="#FFCC80"/><line x1="410" y1="134" x2="410" y2="154" stroke="#795548" stroke-width="3"/></svg></div>
   </div></div>
 
+  </div><!-- end printScrollArea -->
 </div>
 
 <div class="header">
@@ -481,7 +510,7 @@
       <span class="step-icon">🦁</span>
       <div class="step-title">Vi ser dyr i Zoo!</div>
       <div class="step-desc">Vi går rundt og ser dyr.</div>
-      <div class="tags"><span class="tag">🐾 Mange dyr</span><span class="tag">👫 Bliv hos klassen</span></div>
+      <div class="tags"><span class="tag">🐾 Mange dyr</span><span class="tag">👫 Bliv hos din venskabsklasse gruppe</span></div>
       <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="165" fill="#FFF3EA"/><rect x="0" y="0" width="500" height="80" fill="#d0f0f7"/><rect x="0" y="135" width="500" height="30" fill="#6BCB77"/><rect x="185" y="32" width="130" height="85" fill="#6BCB77" rx="6"/><rect x="174" y="21" width="152" height="20" fill="#388e3c" rx="5"/><text x="250" y="37" font-family="Arial" font-size="14" font-weight="900" fill="white" text-anchor="middle">ZOO</text><rect x="210" y="62" width="55" height="55" fill="#8d6e63" rx="4"/><circle cx="257" cy="91" r="4" fill="#FFD93D"/><text x="72" y="120" font-size="38" text-anchor="middle">🦒</text><text x="152" y="126" font-size="34" text-anchor="middle">🐘</text><text x="348" y="124" font-size="36" text-anchor="middle">🐧</text><text x="428" y="118" font-size="32" text-anchor="middle">🦁</text></svg>
     </div>
   </div>
@@ -514,7 +543,7 @@
       <span class="step-icon">🚶</span>
       <div class="step-title">Vi går til toget</div>
       <div class="step-desc">Zoo er slut. Vi går til Valby Station. Der er biler på vejen. Bliv tæt på klassen.</div>
-      <div class="tags"><span class="tag">👫 Bliv med klassen</span><span class="tag">🚶 20 min = 1 tegnefilms afsnit</span><span class="tag">🚗 Der er biler</span></div>
+      <div class="tags"><span class="tag">👫 Bliv med din venskabsklasse gruppe</span><span class="tag">🚶 20 min = 1 tegnefilms afsnit</span><span class="tag">🚗 Der er biler</span></div>
       <svg class="scene" viewBox="0 0 500 165" xmlns="http://www.w3.org/2000/svg"><rect width="500" height="165" fill="#FFF0F0"/><rect x="0" y="110" width="500" height="55" fill="#9e9e9e"/><rect x="0" y="128" width="500" height="6" fill="#757575"/><rect x="0" y="140" width="500" height="6" fill="#757575"/><rect x="20" y="134" width="40" height="4" fill="#FFD93D" rx="2"/><rect x="100" y="134" width="40" height="4" fill="#FFD93D" rx="2"/><rect x="180" y="134" width="40" height="4" fill="#FFD93D" rx="2"/><rect x="260" y="134" width="40" height="4" fill="#FFD93D" rx="2"/><rect x="340" y="134" width="40" height="4" fill="#FFD93D" rx="2"/><rect x="0" y="108" width="500" height="6" fill="#bdbdbd"/><rect x="0" y="40" width="100" height="72" fill="#FF8C42" rx="4"/><rect x="110" y="55" width="80" height="57" fill="#4ECDC4" rx="4"/><rect x="200" y="30" width="90" height="82" fill="#FF8C42" rx="4"/><rect x="300" y="50" width="70" height="62" fill="#A78BFA" rx="4"/><rect x="380" y="38" width="85" height="74" fill="#4ECDC4" rx="4"/><rect x="30" y="112" width="72" height="30" fill="#FF6B6B" rx="6"/><rect x="40" y="105" width="48" height="18" fill="#e05555" rx="4"/><circle cx="48" cy="143" r="8" fill="#333"/><circle cx="88" cy="143" r="8" fill="#333"/><rect x="200" y="112" width="72" height="30" fill="#4D96FF" rx="6"/><rect x="210" y="105" width="48" height="18" fill="#3a7dd4" rx="4"/><circle cx="218" cy="143" r="8" fill="#333"/><circle cx="258" cy="143" r="8" fill="#333"/><rect x="360" y="112" width="72" height="30" fill="#6BCB77" rx="6"/><circle cx="378" cy="143" r="8" fill="#333"/><circle cx="418" cy="143" r="8" fill="#333"/></svg>
     </div>
   </div>
@@ -601,7 +630,7 @@ body{background:#444;font-family:Arial,sans-serif;-webkit-print-color-adjust:exa
 <div class="print-sheet">
     <div class="pcard yellow"><div class="pcard-top"><span class="pcard-icon">🏫</span><div><div class="pcard-title">Vi går fra skolen</div><div class="pcard-desc">Vi går alle ud. Vi går mod toget. Hold dig tæt på klassen.</div><div class="ptags"><span class="ptag">🚶 Vi går</span><span class="ptag">👫 Klassen er med</span></div>
 <div class="print-sheet">
-    <div class="pcard orange"><div class="pcard-top"><span class="pcard-icon">🦁</span><div><div class="pcard-title">Vi ser dyr i Zoo!</div><div class="pcard-desc">Vi går rundt og ser dyr.</div><div class="ptags"><span class="ptag">🐾 Mange dyr</span><span class="ptag">👫 Bliv hos klassen</span></div>
+    <div class="pcard orange"><div class="pcard-top"><span class="pcard-icon">🦁</span><div><div class="pcard-title">Vi ser dyr i Zoo!</div><div class="pcard-desc">Vi går rundt og ser dyr.</div><div class="ptags"><span class="ptag">🐾 Mange dyr</span><span class="ptag">👫 Bliv hos din venskabsklasse gruppe</span></div>
 <div class="print-sheet" style="grid-template-rows: 1fr 1fr; align-content: start; gap: 18px;">
     <div class="pcard teal" style="height: calc((794px - 64px - 18px) / 2); max-height: calc((794px - 64px - 18px) / 2);"><div class="pcard-top"><span class="pcard-icon">🚆</span><div><div class="pcard-title">Vi tager toget hjem</div><div class="pcard-desc">Vi stiger på det røde tog. Vi sidder ned. Turen tager 40 min.</div><div class="pbadge"><div class="plc">C</div> S-tog linje C Valby→Frederikssund</div><div class="ptags"><span class="ptag">🔴 Samme tog</span><span class="ptag">💺 Sid ned</span><span class="ptag">⏱️ 40 min = halvdelen af en stor tegnefilm</span></div>
 </div>
@@ -637,27 +666,11 @@ scale();window.addEventListener('resize',scale);
 
   function openPrintPreview() {
     const overlay = document.getElementById('printOverlay');
-    overlay.style.display = 'block';
+    overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    // Wait for browser to paint before scaling
     requestAnimationFrame(function() {
       requestAnimationFrame(scaleSheets);
     });
-  }
-
-  function downloadKort() {
-    // Show print preview with download tip — no popup needed
-    openPrintPreview();
-    // Update tip text for download context
-    var bar = document.querySelector('.print-overlay-bar');
-    if (!document.getElementById('downloadTip')) {
-      var tip = document.createElement('div');
-      tip.id = 'downloadTip';
-      tip.style.cssText = 'background:#FF8C42;color:white;border-radius:8px;padding:10px 14px;margin:0 16px 12px;font-size:.85rem;font-weight:900;text-align:center;line-height:1.5;';
-      tip.innerHTML = '📱 iPhone: Del-ikonet → <b>Print</b> → Gem som PDF<br>💻 PC: Ctrl+P → Gem som PDF';
-      bar.after(tip);
-    }
-    document.getElementById('downloadTip').style.display = 'block';
   }
 
   function closePrintPreview() {
@@ -668,18 +681,15 @@ scale();window.addEventListener('resize',scale);
   }
 
   function doPrintNow() {
-    var sheets = document.getElementById('printOverlay').innerHTML;
-    var w = window.open('', '_blank');
-    if (!w) { alert('Tillad popups for at printe'); return; }
-    w.document.write('<!DOCTYPE html><html><head><meta charset=UTF-8><style>.print-overlay-bar{display:none}.sheet-scaler{margin-bottom:14px}.print-sheet{background:white;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;box-shadow:0 3px 12px rgba(0,0,0,.15);transform:none!important}.pcard{display:flex;flex-direction:column;gap:5px;border:2px solid #ccc;border-left:8px solid #ccc;border-radius:6px;padding:9px 11px;background:white;min-height:160px;overflow:hidden}.pcard.yellow{border-left-color:#D4A800}.pcard.coral{border-left-color:#E04040}.pcard.teal{border-left-color:#2AABA2}.pcard.green{border-left-color:#3A9B47}.pcard.orange{border-left-color:#D06020}.pcard.purple{border-left-color:#7B5FD4}.pcard.blue{border-left-color:#2266DD}.pcard-top{display:flex;align-items:flex-start;gap:5px;position:relative}.pcard-icon{font-size:18px;flex-shrink:0}.pcard-title{font-size:12px;font-weight:900;flex:1;padding-right:20px;color:#111}.pcard.yellow .pcard-title{color:#8a6000}.pcard.coral .pcard-title{color:#c02020}.pcard.teal .pcard-title{color:#1a7a74}.pcard.green .pcard-title{color:#1e6b28}.pcard.orange .pcard-title{color:#a04010}.pcard.purple .pcard-title{color:#5040a0}.pcard.blue .pcard-title{color:#1144bb}.pcard-desc{font-size:10px;font-weight:700;color:#444}.pcard-num{position:absolute;top:0;right:0;font-size:13px;font-weight:900}.pcard.yellow .pcard-num{color:#D4A800}.pcard.coral .pcard-num{color:#E04040}.pcard.teal .pcard-num{color:#2AABA2}.pcard.green .pcard-num{color:#3A9B47}.pcard.orange .pcard-num{color:#D06020}.pcard.purple .pcard-num{color:#7B5FD4}.pcard.blue .pcard-num{color:#2266DD}.pbadge{display:inline-flex;align-items:center;gap:3px;border:1.5px solid #c62828;color:#c62828;border-radius:4px;padding:2px 5px;font-size:8px;font-weight:900}.plc{width:11px;height:11px;border-radius:50%;border:1.5px solid #c62828;font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;color:#c62828}.ptags{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}.ptag{border-radius:999px;padding:1px 6px;font-size:8px;font-weight:900;color:#333;border:1.5px solid #bbb}.pscene{flex:1;width:100%;border-radius:4px;overflow:hidden;display:block;border:1.5px solid #ddd;min-height:0}.tip{background:#4ECDC4;color:white;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;font-weight:700;text-align:center}@media print{@page{size:A4 landscape;margin:6mm}body{background:white;padding:0}.tip{display:none}.sheet-scaler{page-break-after:always}.sheet-scaler:last-child{page-break-after:avoid}.print-sheet{box-shadow:none;padding:0;gap:4mm}}</style></head><body><div class=tip>&#128241; Del-ikonet &#8594; Print &#8594; Gem som PDF &nbsp;|&nbsp; &#128187; Ctrl+P &#8594; Gem som PDF</div>');
-    w.document.write(sheets);
-    w.document.write('</body></html>');
-    w.document.close();
+    window.print();
   }
+
   function scaleSheets() {
     const sheets = document.querySelectorAll('.print-sheet');
     const scalers = document.querySelectorAll('.sheet-scaler');
-    const scale = Math.min(1, (window.innerWidth - 48) / 1123);
+    const scrollArea = document.getElementById('printScrollArea');
+    const available = (scrollArea ? scrollArea.clientWidth : window.innerWidth) - 48;
+    const scale = Math.min(1, available / 1123);
     sheets.forEach((s, i) => {
       s.style.transform = `scale(${scale})`;
       s.style.transformOrigin = 'top center';
