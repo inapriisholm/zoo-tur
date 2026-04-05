@@ -34,7 +34,7 @@
     --muted:   #5a5a7a;
   }
 
-  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 
   body {
     font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
@@ -329,15 +329,21 @@
   /* Hide old printGrid */
   #printGrid { display:none !important; }
 
-  /* @media print — fires when user prints from overlay */
+  /* @media print — skjul alt undtagen printsiderne */
   @media print {
     @page { size: A4 landscape; margin: 0; }
 
-    /* Hide everything except the overlay */
-    body > *:not(#printOverlay) { display: none !important; }
-    #downloadTip { display: none !important; }
+    /* Skjul alle synlige elementer på hovesiden */
+    .school-banner,
+    .header,
+    .progress-wrap,
+    .tap-hint,
+    .steps,
+    #congrats,
+    .print-btn-wrap,
+    .print-overlay-bar { display: none !important; }
 
-    /* Make overlay behave as normal flow */
+    /* Gør overlay til normal flow */
     #printOverlay {
       display: block !important;
       position: static !important;
@@ -345,31 +351,33 @@
       padding: 0 !important;
       overflow: visible !important;
       height: auto !important;
+      width: 100% !important;
     }
+
+    /* Gør scroll-området synligt */
     #printScrollArea {
       overflow: visible !important;
+      padding: 0 !important;
+      height: auto !important;
     }
 
-    /* Hide the button bar and tip */
-    .print-overlay-bar { display: none !important; }
-
-    /* Each scaler: exact landscape height so page breaks correctly */
+    /* Hver A4-skalerer: én side pr. ark */
     .sheet-scaler {
       display: block !important;
-      height: 210mm !important;
       width: 297mm !important;
+      height: 210mm !important;
       overflow: hidden !important;
       page-break-after: always !important;
       break-after: page !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    .sheet-scaler:last-of-type {
+    .sheet-scaler:last-child {
       page-break-after: avoid !important;
       break-after: avoid !important;
     }
-    #downloadTip { display: none !important; }
-    #printOverlay > *:not(.sheet-scaler):not(.print-overlay-bar) { display: none !important; }
 
-    /* Each A4 sheet: exactly 297×210mm landscape */
+    /* Hvert printark: præcis A4 liggende */
     .print-sheet {
       transform: none !important;
       width: 297mm !important;
@@ -381,7 +389,7 @@
       margin: 0 !important;
     }
 
-    /* Scale card text down for mm-based layout */
+    /* Tekststørrelser til print */
     .pcard { border-left-width: 4px !important; padding: 3mm 3.5mm !important; gap: 2mm !important; }
     .pcard-icon  { font-size: 16px !important; }
     .pcard-title { font-size: 10pt !important; }
@@ -708,6 +716,15 @@ scale();window.addEventListener('resize',scale);
 
   window.addEventListener('resize', () => {
     if (document.getElementById('printOverlay').style.display !== 'none') scaleSheets();
+  });
+
+  // Sørg for at overlayét er synligt inden browseren printer
+  window.addEventListener('beforeprint', () => {
+    document.getElementById('printOverlay').style.display = 'block';
+  });
+  window.addEventListener('afterprint', () => {
+    var overlay = document.getElementById('printOverlay');
+    if (overlay.style.display === 'block') overlay.style.display = 'flex';
   });
 
 </script>
