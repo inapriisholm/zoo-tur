@@ -9,16 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Zoo-tur 🦁"/>
 <meta name="theme-color" content="#4ECDC4"/>
 <title>Min dag i Zoo 🦁</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
-<style>
-  /* Fallback: hvis Google Fonts ikke kan hentes (fx offline), bruges system-fonte */
-  @font-face {
-    font-family: 'Nunito';
-    font-style: normal;
-    font-weight: 400 900;
-    src: local('Nunito'), local('Nunito-Regular');
-  }
-</style>
+<!-- Bruger system-fonte for hurtigere indlæsning -->
 
 <style>
   :root {
@@ -37,7 +28,7 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 
   body {
-    font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -65,7 +56,7 @@
     border: none;
     border-radius: 999px;
     padding: .5rem 1.2rem;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     font-size: .85rem;
     font-weight: 900;
     cursor: pointer;
@@ -219,7 +210,7 @@
   .print-btn-wrap { text-align:center; padding:.7rem 1rem; display:flex; justify-content:center; gap:.6rem; flex-wrap:nowrap; position:sticky; top:0; z-index:100; background:var(--bg); box-shadow:0 2px 8px rgba(0,0,0,.08); }
   .print-btn {
     background:var(--teal); color:white; border:none; border-radius:999px;
-    padding:.6rem 1.1rem; font-family:'Nunito',sans-serif; font-size:.85rem;
+    padding:.6rem 1.1rem; font-family:'Segoe UI',Arial,sans-serif; font-size:.85rem;
     font-weight:900; cursor:pointer; box-shadow:0 4px 14px rgba(78,205,196,.35);
     white-space:nowrap;
   }
@@ -238,7 +229,7 @@
   }
   .print-overlay-bar button {
     border:none; border-radius:999px; padding:.65rem 2rem;
-    font-family:'Nunito',sans-serif; font-size:1rem; font-weight:900; cursor:pointer;
+    font-family:'Segoe UI',Arial,sans-serif; font-size:1rem; font-weight:900; cursor:pointer;
   }
   .btn-do-print      { background:#FF8C42; color:white; }
   .btn-close-preview { background:white; color:#333; }
@@ -333,33 +324,34 @@
   @media print {
     @page { size: A4 landscape; margin: 0; }
 
-    html, body { background: white !important; height: auto !important; overflow: hidden !important; }
+    /* Skjul ALT på siden */
+    html, body {
+      background: white !important;
+      height: auto !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    body > * { display: none !important; }
 
-    /* Skjul alle synlige elementer på hovesiden */
-    .school-banner,
-    .header,
-    .progress-wrap,
-    .tap-hint,
-    .steps,
-    #congrats,
-    .print-btn-wrap,
-    .print-overlay-bar { display: none !important; }
-
-    /* Gør overlay til normal flow */
+    /* Vis kun overlay */
     #printOverlay {
       display: block !important;
       position: static !important;
       background: white !important;
       padding: 0 !important;
-      overflow: visible !important;
+      margin: 0 !important;
+      overflow: hidden !important;
       height: auto !important;
       width: 100% !important;
     }
 
-    /* Gør scroll-området synligt */
+    .print-overlay-bar { display: none !important; }
+
     #printScrollArea {
-      overflow: visible !important;
+      overflow: hidden !important;
       padding: 0 !important;
+      margin: 0 !important;
       height: auto !important;
     }
 
